@@ -9,9 +9,14 @@
 
 namespace glfx
 {
+	Shader::~Shader()
+	{
+		//glDeleteProgram(m_program_id);
+	}
+
 	Shader::Shader(const std::string_view vertex, const std::string_view fragment)
 	{
-		auto ReadShaderFile = [=](const auto path) {
+		auto ReadShader = [=](const auto path) {
 			std::ifstream shader_file = {};
 			std::string shader_code = {};
 			shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -30,8 +35,8 @@ namespace glfx
 		};
 
 		// Read shaders
-		const auto vertex_shader_code = ReadShaderFile(vertex.data());
-		const auto fragment_shader_code = ReadShaderFile(fragment.data());
+		const auto vertex_shader_code = ReadShader(vertex.data());
+		const auto fragment_shader_code = ReadShader(fragment.data());
 
 		const auto to_c_string_vertex_code = vertex_shader_code.c_str();
 		const auto to_c_string_fragment_code = fragment_shader_code.c_str();
@@ -76,18 +81,28 @@ namespace glfx
 		glDeleteShader(fragment_id);
 	}
 
-	void Shader::Apply() const
+	auto Shader::Apply() const -> void
 	{
 		glUseProgram(m_program_id);
 	}
 
-	void Shader::SetMatrix4x4(const std::string_view name, const glm::mat4& m)
+	auto Shader::SetMatrix4x4(const std::string_view name, const glm::mat4& m) -> void
 	{
 		glUniformMatrix4fv(glGetUniformLocation(m_program_id, name.data()), 1, false, &m[0][0]);
 	}
 
-	void Shader::SetFloat(const std::string_view name, const float value)
+	auto Shader::SetFloat(const std::string_view name, const float value) -> void
 	{
 		glUniform1f(glGetUniformLocation(m_program_id, name.data()), value);
+	}
+
+	auto Shader::SetVec3(const std::string_view name, const glm::vec3& value) -> void
+	{
+		glUniform3fv(glGetUniformLocation(m_program_id, name.data()), 1, &value[0]);
+	}
+
+	auto Shader::Dispose() -> void
+	{
+
 	}
 }

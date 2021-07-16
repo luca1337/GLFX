@@ -2,22 +2,43 @@
 
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <tuple>
+
+struct GLFWwindow;
 
 namespace glfx
 {
+	enum class CameraDirection 
+	{
+		FRONT,
+		BACK,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN
+	};
+
+	struct CameraProps 
+	{
+		glm::dvec3 m_world_position = { 0.0f, 0.0f, 5.0f };
+		glm::mat4 m_projection		= glm::identity<glm::mat4>();
+		double m_yaw				= { -90.0 };
+		double m_pitch				= { 0.0 };
+		double m_fov				= { 65.0 };
+	};
+
+	auto GetViewMatrix(const CameraProps&) -> glm::mat4;
+	auto ComputeCameraProjection(const double fov, const double width, const double height, const double z_near, const double z_far) -> glm::mat4;
+
 	class Camera
 	{
 	public:
-		Camera(const glm::vec3& world_position);
-		void Project(const float fov, const float width, const float height, const float z_near, const float z_far);
-		auto GetViewMatrix() const -> glm::mat4;
-		auto GetProjectionMatrix() const -> glm::mat4;
-		void UpdateMatrix();
+		auto GetWorldPosition() const -> glm::dvec3;
+		auto RotateByMouse(GLFWwindow*) -> void;
+		auto Animate(GLFWwindow*, const double delta_time) -> void;
+		CameraProps m_camera_props = {};
 	private:
-		glm::vec3 m_world_position;
-
-		glm::mat4 m_view;
-		glm::mat4 m_projection;
+		auto Translate(const CameraDirection, const double delta_time) -> void;
 	};
 }
 

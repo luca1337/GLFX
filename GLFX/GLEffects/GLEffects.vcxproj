@@ -116,10 +116,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\API\GLFW\include\;$(SolutionDir)\API\glad\include\;$(SolutionDir)\API\glm\include\;$(SolutionDir)\API\ImGui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)\API\GLFW\include\;$(SolutionDir)\API\glad\include\;$(SolutionDir)\API\glm\;$(SolutionDir)\API\ImGui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,9 +152,14 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GLFXEngine.cpp" />
+    <ClCompile Include="GraphicsSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UpdateSystem.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -164,9 +169,19 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GLFX.h" />
+    <ClInclude Include="GLFXEngine.h" />
+    <ClInclude Include="GraphicsSystem.h" />
+    <ClInclude Include="IDisposable.h" />
     <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="ISystem.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ObjLoader.h" />
+    <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="UpdateSystem.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />

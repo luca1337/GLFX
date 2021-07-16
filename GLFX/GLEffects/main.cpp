@@ -1,6 +1,8 @@
 #include "Engine.h"
 #include "GameManager.h"
 
+#include "ObjLoader.h"
+
 int main(int argc, char* argv[])
 {
 	glfx::Engine::Init(4, 6);
