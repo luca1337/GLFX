@@ -16,6 +16,7 @@ glfx::Window::Window(const std::uint32_t width, const std::uint32_t height, cons
 	glfwMakeContextCurrent(window);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, [](const auto window, const auto width, const auto height) {
+		// todo: factor out this data in a template free function
 		auto& window_ptr = *static_cast<Window*>(glfwGetWindowUserPointer(window));
 		window_ptr.m_width = width;
 		window_ptr.m_height = height;

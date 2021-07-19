@@ -4,6 +4,10 @@
 
 namespace glfx
 {
+	auto constexpr DEFAULT_WIDTH	= 1920;
+	auto constexpr DEFAULT_HEIGHT	= 1080;
+	auto constexpr DEFAULT_FOV		= 65.0;
+
 	enum class ISystemType
 	{
 		GRAPHICS = 0,

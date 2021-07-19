@@ -161,6 +161,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GLFXEngine.cpp" />
     <ClCompile Include="GraphicsSystem.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="GLFX.h" />
     <ClInclude Include="GLFXEngine.h" />
     <ClInclude Include="GraphicsSystem.h" />
+    <ClInclude Include="GUIManager.h" />
     <ClInclude Include="IDisposable.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="ISystem.h" />

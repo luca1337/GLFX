@@ -35,7 +35,6 @@ namespace glfx
 		m_shader.SetMatrix4x4("view", view);
 		m_shader.SetMatrix4x4("projection", projection);
 		m_shader.SetVec3("eye", eye);
-
 	}
 
 	auto Mesh::GetPosition() const -> glm::vec3
