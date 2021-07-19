@@ -16,30 +16,16 @@ namespace glfx
 
 	bool first_mouse = true;
 	double last_x = {}, last_y = {};
+	double x_pos = {}, y_pos = {};
 	auto Camera::RotateByMouse(GLFWwindow* window) -> void
 	{
-		double x_pos = {}, y_pos = {};
 		glfwGetCursorPos(window, &x_pos, &y_pos);
 
-		if (first_mouse)
-		{
-			last_x = x_pos;
-			last_y = y_pos;
-			first_mouse = false;
-		}
+		const auto delta = (glm::dvec2(x_pos, y_pos) - previous_position.value_or(glm::dvec2(x_pos, y_pos))) * 0.1;
+		previous_position = glm::dvec2(x_pos, y_pos);
 
-		auto xoffset = x_pos - last_x;
-		auto yoffset = y_pos - last_y;
-
-		last_x = x_pos;
-		last_y = y_pos;
-
-		auto sensitivity = 0.1;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
-		m_camera_props.m_yaw += xoffset;
-		m_camera_props.m_pitch += yoffset;
+		m_camera_props.m_yaw += delta.x;
+		m_camera_props.m_pitch += delta.y;
 
 		// make sure that when pitch is out of bounds, screen doesn't get flipped.
 		constexpr auto max_pitch = 89.9;

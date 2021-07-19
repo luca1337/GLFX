@@ -3,6 +3,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <tuple>
+#include <optional>
 
 struct GLFWwindow;
 
@@ -36,9 +37,11 @@ namespace glfx
 		auto GetWorldPosition() const -> glm::dvec3;
 		auto RotateByMouse(GLFWwindow*) -> void;
 		auto Animate(GLFWwindow*, const double delta_time) -> void;
+		void Reset() { previous_position.reset(); }
 		CameraProps m_camera_props = {};
 	private:
 		auto Translate(const CameraDirection, const double delta_time) -> void;
+		std::optional<glm::dvec2> previous_position;
 	};
 }
 

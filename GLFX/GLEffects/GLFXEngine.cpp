@@ -2,6 +2,8 @@
 #include "Camera.h"
 #include "Engine.h"
 #include "GraphicsSystem.h"
+#include "ResourceManager.h"
+#include "Texture.h"
 #include "UpdateSystem.h"
 #include "Window.h"
 #include "World.h"
@@ -9,7 +11,9 @@
 #include <algorithm>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_glfw.h"
+#include "ImGui/imgui_impl_opengl3.h"
 
 namespace glfx
 {
@@ -29,8 +33,13 @@ namespace glfx
         m_main_camera = {};
 
         // Shaders
-        solid_shader = glfx::Shader("vertex.glsl", "fragment.glsl");
-        outline_shader = glfx::Shader("outline_vertex.glsl", "outline_fragment.glsl");
+        auto& shader_resource_manager = ResourceManager<Shader>::GetInstance();
+        shader_resource_manager.Add(ResourceType::SHADERS, "SolidShader", glfx::Shader("vertex.glsl", "fragment.glsl"));
+        shader_resource_manager.Add(ResourceType::SHADERS, "OutlineShader", glfx::Shader("outline_vertex.glsl", "outline_fragment.glsl"));
+
+        // Textures
+        auto& textures_resource_manager = ResourceManager<Texture>::GetInstance();
+        textures_resource_manager.Add(ResourceType::TEXTURES, "Wall", glfx::Texture("Assets/Textures/wall.jpg"));
 
         auto graphics_system = std::make_unique<GraphicsSystem>();
         auto update_system = std::make_unique<UpdateSystem>();
@@ -39,13 +48,23 @@ namespace glfx
         AddSystem(std::move(graphics_system));
 
         SortSystems();
+
+        IMGUI_CHECKVERSION();
+
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui_ImplGlfw_InitForOpenGL(m_window->GetWindowHandle(), true);
+        ImGui_ImplOpenGL3_Init();
+        ImGui::StyleColorsDark();
     }
+
+    float x = 0;
 
     auto GLFXEngine::Run() -> void
     {
         const auto window_handle = m_window->GetWindowHandle();
 
-        glfwSetInputMode(window_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetInputMode(window_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // global engine config
         glEnable(GL_DEPTH_TEST);
@@ -57,14 +76,27 @@ namespace glfx
         while (!glfwWindowShouldClose(window_handle))
         {
             const auto delta_time = ComputeDeltaTime();
-            glfwPollEvents();
 
-            glClearColor(0.3, 0.3, 0.8, 1.0);
-            //glClearStencil(0);
+            glClearColor(0.2, 0.2, 0.9, 1.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::Begin("Hello World");
+            ImGui::Text("Pippo");
+            ImGui::End();
+
             // Camera handle
-            m_main_camera.RotateByMouse(window_handle);
+            if (glfwGetMouseButton(window_handle, GLFW_MOUSE_BUTTON_2))
+            {
+                m_main_camera.RotateByMouse(window_handle);
+            }
+            else
+            {
+                m_main_camera.Reset();
+            }
             m_main_camera.Animate(window_handle, delta_time);
 
             for (const auto& system : m_systems)
@@ -72,8 +104,19 @@ namespace glfx
                 system->Tick(m_world, delta_time);
             }
 
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window_handle);
+            glfwPollEvents();
         }
+
+        // Cleanup
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
+        glfwDestroyWindow(window_handle);
+        glfwTerminate();
     }
 
     auto GLFXEngine::SortSystems() -> void

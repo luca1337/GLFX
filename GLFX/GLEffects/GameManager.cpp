@@ -4,11 +4,12 @@
 #include "Camera.h"
 #include <GLFW/glfw3.h>
 
+#include "Utils.h"
 #include "World.h"
+#include "ResourceManager.h"
+
 #include <string_view>
 #include <iostream>
-
-#include "Utils.h"
 
 namespace glfx
 {
@@ -25,8 +26,11 @@ namespace glfx
 		auto& engine = GLFXEngine::Get();
 		engine.Initialize(width, height, title);
 
+		auto solid_shader = ResourceManager<Shader>::GetInstance().Get(ResourceType::SHADERS, "SolidShader");
+
 		m_cube = std::make_shared<Cube>();
-		m_cube->SetShader(engine.solid_shader);
+		m_cube->SetShader(*solid_shader);
+
 		engine.GetWorld()->Add(m_cube);
 	}
 

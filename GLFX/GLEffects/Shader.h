@@ -1,13 +1,14 @@
 #pragma once
 
 #include "IDisposable.h"
+#include "Resource.h"
 
 #include <string_view>
 #include <glm/glm.hpp>
 
 namespace glfx
 {
-	class Shader : public IDisposable
+	class Shader : public Resource, IDisposable
 	{
 	public:
 		~Shader();
@@ -19,7 +20,7 @@ namespace glfx
 		auto SetVec3(const std::string_view name, const glm::vec3& value) -> void;
 		auto Dispose() -> void override;
 	private:
-		unsigned int m_program_id;
+		unsigned int m_program_id = {};
 	};
 }
 

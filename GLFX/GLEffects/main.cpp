@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 
 	auto& gm = glfx::GameManager::Get();
 
-	gm.Init(800, 600, "GLFX");
+	gm.Init(1920, 1080, "GLFX");
 	gm.Run();
 
 	return 0;
