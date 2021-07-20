@@ -10,7 +10,7 @@ namespace glfx
 	public:
 		virtual auto BeginPlay() -> void;
 		virtual auto Tick(const double delta_time) -> void;
-		virtual auto GetName() const -> std::string_view;
+		virtual auto GetName() const -> std::string;
 		uint32_t m_component_type;
 	};
 }

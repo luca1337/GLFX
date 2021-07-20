@@ -10,8 +10,8 @@ namespace glfx
     {
     }
 
-    auto GameObject::GetName() const -> std::string_view
+    auto GameObject::GetName() const -> std::string
     {
-        return "GameObject";
+        return "";
     }
 }

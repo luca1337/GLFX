@@ -10,8 +10,8 @@ namespace glfx
 	{
 	}
 
-	auto Component::GetName() const -> std::string_view
+	auto Component::GetName() const -> std::string
 	{
-		return "Component";
+		return "";
 	}
 }

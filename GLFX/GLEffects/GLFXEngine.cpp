@@ -17,6 +17,8 @@
 
 namespace glfx
 {
+    uint32_t GLFXEngine::m_component_counter = 0;
+
     auto GLFXEngine::Get() -> GLFXEngine&
     {
         static auto glfx_engine = GLFXEngine{};
@@ -73,7 +75,7 @@ namespace glfx
         {
             const auto delta_time = ComputeDeltaTime();
 
-            glClearColor(0.2, 0.2, 0.9, 1.0);
+            glClearColor(0.4f, 0.4f, 0.9f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             m_gui->RenderAll(delta_time);
