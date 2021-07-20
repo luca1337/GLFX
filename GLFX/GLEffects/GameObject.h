@@ -25,7 +25,7 @@ namespace glfx
 		auto GetComponent() -> std::optional<std::shared_ptr<Type>>;
 
 	protected:
-		std::shared_ptr<Transform> m_transform;
+		std::shared_ptr<Transform> m_transform; // can we avoid pointers? and using references instead
 
 	private:
 		std::vector<std::shared_ptr<Component>> m_components; // can also be converted to a weak
@@ -38,6 +38,7 @@ namespace glfx
 		const auto new_component = std::make_shared<Type>();
 		m_components.push_back(new_component);
 		new_component->m_component_type = Type::m_type;
+		printf("assigned to component type: %d", new_component->m_component_type);
 		return new_component;
 	}
 
