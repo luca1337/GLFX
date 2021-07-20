@@ -49,13 +49,7 @@ namespace glfx
 
         SortSystems();
 
-        IMGUI_CHECKVERSION();
-
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui_ImplGlfw_InitForOpenGL(m_window->GetWindowHandle(), true);
-        ImGui_ImplOpenGL3_Init();
-        ImGui::StyleColorsDark();
+        m_gui = std::make_shared<glfx::gui::GUIManager>();
     }
 
     float x = 0;
@@ -73,6 +67,8 @@ namespace glfx
         glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 
+        m_gui->Init(window_handle);
+
         while (!glfwWindowShouldClose(window_handle))
         {
             const auto delta_time = ComputeDeltaTime();
@@ -80,13 +76,7 @@ namespace glfx
             glClearColor(0.2, 0.2, 0.9, 1.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-
-            ImGui::Begin("Hello World");
-            ImGui::Text("Pippo");
-            ImGui::End();
+            m_gui->RenderAll(delta_time);
 
             // Camera handle
             if (glfwGetMouseButton(window_handle, GLFW_MOUSE_BUTTON_2))
@@ -104,8 +94,9 @@ namespace glfx
                 system->Tick(m_world, delta_time);
             }
 
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            // imgui
+            m_gui->SubmitAll();
+
             glfwSwapBuffers(window_handle);
             glfwPollEvents();
         }

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Camera.h"
+#include "GUIManager.h"
 #include "Shader.h"
 
 #include <memory>
 #include <vector>
 #include <string_view>
 
-#include "Camera.h"
 
 namespace glfx
 {
@@ -40,7 +41,12 @@ namespace glfx
 
 		std::shared_ptr<World> m_world;
 		std::shared_ptr<Window> m_window;
+		std::shared_ptr<gui::GUIManager> m_gui;
 		Camera m_main_camera;
+
+		static uint32_t m_component_counter;
+
+		friend class GameObject;
 	};
 }
 

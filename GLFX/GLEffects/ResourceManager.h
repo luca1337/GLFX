@@ -42,7 +42,7 @@ namespace glfx
 		auto Get(const ResourceType, const std::string& resource_name) -> std::optional<T>;
 	private:
 		auto Find(const ResourceType, const std::string& resource_name) -> std::optional<T>;
-		Resource m_resources;
+		Resource m_resources = {};
 	};
 
 	template<typename T>
