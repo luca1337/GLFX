@@ -47,7 +47,7 @@ namespace glfx
 		m_mvp.m_matrix_scale		= glm::scale(transform->m_scale);
 		m_mvp.m_matrix_rotation		= glm::eulerAngleXYZ(transform->m_rotation.x, transform->m_rotation.y, transform->m_rotation.z);
 
-		const auto model			= m_mvp.m_matrix_translation * m_mvp.m_matrix_scale * m_mvp.m_matrix_rotation;
+		const auto model			= m_mvp.m_matrix_translation * m_mvp.m_matrix_rotation * m_mvp.m_matrix_scale;
 		const auto view				= glfx::GetViewMatrix(engine.GetMainCamera().m_camera_props);
 		const auto projection		= glfx::ComputeCameraProjection(65.0, engine.GetWindow()->GetWidth(), engine.GetWindow()->GetHeight(), 0.01, 1000.0); 
 		const auto eye				= GLFXEngine::Get().GetMainCamera().GetWorldPosition();
