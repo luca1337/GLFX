@@ -14,6 +14,7 @@ namespace glfx
 	public:
 		virtual ~GameObject() = default;
 		GameObject() = default;
+		GameObject(const std::string& name);
 		virtual auto BeginPlay() -> void;
 		virtual auto Tick(const double delta_time) -> void;
 		virtual auto GetName() const -> std::string;
@@ -22,13 +23,18 @@ namespace glfx
 		auto AddComponent() -> std::shared_ptr<Type>;
 
 		template <typename Type = Component>
+		auto AddComponent(const std::shared_ptr<Type>&) -> std::shared_ptr<Type>;
+
+		template <typename Type = Component>
 		auto GetComponent() -> std::optional<std::shared_ptr<Type>>;
 
-	protected:
+	public:
+		// transform can be public without any encapsulation
 		std::shared_ptr<Transform> m_transform; // can we avoid pointers? and using references instead
 
 	private:
 		std::vector<std::shared_ptr<Component>> m_components; // can also be converted to a weak
+		std::string m_name;
 	};
 
 	template<typename Type>
@@ -39,6 +45,15 @@ namespace glfx
 		m_components.push_back(new_component);
 		new_component->m_component_type = Type::m_type;
 		return new_component;
+	}
+
+	template<typename Type>
+	inline auto GameObject::AddComponent(const std::shared_ptr<Type>& component) -> std::shared_ptr<Type>
+	{
+		Type::m_type = ++glfx::GLFXEngine::m_component_counter;
+		m_components.push_back(component);
+		component->m_component_type = Type::m_type;
+		return component;
 	}
 
 	template<typename Type>

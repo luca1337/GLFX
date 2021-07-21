@@ -10,6 +10,6 @@ namespace glfx
 
 	auto GraphicsSystem::Tick(std::shared_ptr<World> world, const double delta_time) -> void
 	{
-		world->Render();
+		world->Update(delta_time);
 	}
 }

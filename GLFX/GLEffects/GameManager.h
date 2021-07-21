@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "Shader.h"
 
+#include <vector>
 #include <memory>
 
 namespace glfx
@@ -22,6 +23,7 @@ namespace glfx
 		GameManager();
 	private:
 		std::shared_ptr<Cube> m_cube;
+		std::vector<std::shared_ptr<Cube>> m_cubes;
 	};
 }
 

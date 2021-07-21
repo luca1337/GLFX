@@ -1,37 +1,37 @@
 #pragma once
 
 #include "Color.h"
-#include "Vertex.h"
 #include "Shader.h"
+#include "Transform.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <memory>
 #include <vector>
 
 namespace glfx
 {
+	/// <summary>
+	/// Base class for all Meshes like [Cube, Sphere, Box, CustomMesh]..
+	/// </summary>
 	class Mesh
 	{
 	public:
-		virtual ~Mesh();
-		Mesh() = default;
-		void Update();
+		Mesh(const std::vector<glm::vec3>& v, const std::vector<glm::vec3>& vn, const std::vector<glm::vec2>& vt);
+		Mesh(const std::string& file_name);
+		auto UpdateMatrix(const std::shared_ptr<glfx::Transform>&) -> void;
+		auto Draw() -> void;
+		auto SetShader(const Shader&) -> void;
+		auto GetShader() const -> Shader;
 
-		auto GetPosition() const -> glm::vec3;
-		auto GetScale() const -> glm::vec3;
-		auto GetRotation() const -> glm::vec3;
+		auto GetVertices() const -> std::vector<glm::vec3>;
+		auto GetVertexNormals() const -> std::vector<glm::vec3>;
+		auto GetUvs() const -> std::vector<glm::vec2>;
 
-		auto SetPosition(const glm::vec3& v) -> void;
-		auto SetScale(const glm::vec3& v) -> void;
-		auto SetRotation(const glm::vec3& v) -> void;
-
-		auto SetShader(const Shader& shader) -> void;
-
+		auto SetVertices(const std::vector<glm::vec3>& v_list) -> void;
+		auto SetNormals(const std::vector<glm::vec3>& vt_list) -> void;
+		auto SetUvs(const std::vector<glm::vec2>& vn_list) -> void;
 	protected:
-		glm::vec3 m_position	= { 0, 0, 0 };
-		glm::vec3 m_rotation	= { 0, 0, 0 };
-		glm::vec3 m_scale		= { 1, 1, 1 };
-
 		glfx::Shader m_shader	= {};
 
 		std::vector<glm::vec3> m_vertices	= {};
@@ -52,8 +52,10 @@ namespace glfx
 		auto GenerateVaoAndVbo(size_t vao_size, unsigned int* vao_array, size_t vbo_size, unsigned int* vbo_array) -> void;
 
 	private:
-		glm::mat4 m_matrix_translation	= glm::identity<glm::mat4>();
-		glm::mat4 m_matrix_scale		= glm::identity<glm::mat4>();
-		glm::mat4 m_matrix_rotation		= glm::identity<glm::mat4>();
+		struct Mvp {
+			glm::mat4 m_matrix_translation	= glm::identity<glm::mat4>();
+			glm::mat4 m_matrix_scale		= glm::identity<glm::mat4>();
+			glm::mat4 m_matrix_rotation		= glm::identity<glm::mat4>();
+		}m_mvp;
 	};
 }

@@ -1,26 +1,30 @@
 #include "World.h"
-#include "IRenderable.h"
+#include "GameObject.h"
 
 namespace glfx
 {
-    void World::Render()
-    {
-        for (const auto& object : m_objects)
-        {
-            object->Render();
-        }
-    }
-
     void World::Update(const double delta_time)
     {
         for (const auto& object : m_objects)
         {
-            object->Update(delta_time);
+            // todo: check if gameObject is not corrupted and is active
+
+            object->Tick(delta_time);
         }
     }
 
-    void World::Add(std::shared_ptr<IRenderable> object)
+    void World::Spawn(std::shared_ptr<GameObject> object)
     {
         m_objects.push_back(object);
+    }
+
+    auto World::GetGameObjects() const -> std::vector<std::shared_ptr<GameObject>>
+    {
+        return m_objects;
+    }
+
+    auto World::ClearWorld() -> void
+    {
+        m_objects.clear();
     }
 }

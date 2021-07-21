@@ -25,13 +25,6 @@ namespace glfx
 	{
 		auto& engine = GLFXEngine::Get();
 		engine.Initialize(width, height, title);
-
-		auto solid_shader = ResourceManager<Shader>::GetInstance().Get(ResourceType::SHADERS, "SolidShader");
-
-		m_cube = std::make_shared<Cube>();
-		m_cube->SetShader(*solid_shader);
-
-		engine.GetWorld()->Add(m_cube);
 	}
 
 	void GameManager::Run()

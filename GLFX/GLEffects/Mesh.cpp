@@ -2,9 +2,8 @@
 #include "GameManager.h"
 #include "GLFXEngine.h"
 #include "Camera.h"
+#include "ObjLoader.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
@@ -12,24 +11,46 @@
 
 namespace glfx
 {
-	Mesh::~Mesh()
+	Mesh::Mesh(const std::vector<glm::vec3>& v, const std::vector<glm::vec3>& vn, const std::vector<glm::vec2>& vt)
 	{
-		glDeleteBuffers(3, m_vbo);
-		glDeleteVertexArrays(1, &m_vao);
+		GenerateVaoAndVbo(1, &m_vao, 3, m_vbo);
+
+		PushGPUData(v.data(), sizeof(v[0]) * v.size(), 0, 0, 3, sizeof(float) * 3, 0);
+		PushGPUData(vn.data(), sizeof(vn[0]) * vn.size(), 1, 1, 3, sizeof(float) * 3, 1);
+		PushGPUData(vt.data(), sizeof(vt[0]) * vt.size(), 2, 2, 2, sizeof(float) * 2, 2);
+
+		SetVertices(v);
+		SetNormals(vn);
+		SetUvs(vt);
 	}
 
-	void Mesh::Update()
+	Mesh::Mesh(const std::string& file_name)
+	{
+		glfx::ObjLoader::Load(file_name, m_vertices, m_uvs, m_normals);
+
+		GenerateVaoAndVbo(1, &m_vao, 3, m_vbo);
+
+		PushGPUData(m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size(), 0, 0, 3, sizeof(float) * 3, 0);
+		PushGPUData(m_normals.data(), sizeof(m_normals[0]) * m_normals.size(), 1, 1, 3, sizeof(float) * 3, 1);
+		PushGPUData(m_uvs.data(), sizeof(m_uvs[0]) * m_uvs.size(), 2, 2, 2, sizeof(float) * 2, 2);
+
+		SetVertices(m_vertices);
+		SetNormals(m_normals);
+		SetUvs(m_uvs);
+	}
+
+	auto Mesh::UpdateMatrix(const std::shared_ptr<glfx::Transform>& transform) -> void
 	{
 		auto& engine = GLFXEngine::Get();
 
-		m_matrix_translation	= glm::translate(glm::mat4(1), m_position);
-		m_matrix_scale			= glm::scale(m_scale);
-		m_matrix_rotation		= glm::eulerAngleXYZ(m_rotation.x, m_rotation.y, m_rotation.z);
+		m_mvp.m_matrix_translation	= glm::translate(glm::mat4(1), transform->m_translation);
+		m_mvp.m_matrix_scale		= glm::scale(transform->m_scale);
+		m_mvp.m_matrix_rotation		= glm::eulerAngleXYZ(transform->m_rotation.x, transform->m_rotation.y, transform->m_rotation.z);
 
-		const auto model		= m_matrix_translation * m_matrix_rotation * m_matrix_scale;
-		const auto view			= glfx::GetViewMatrix(engine.GetMainCamera().m_camera_props);
-		const auto projection	= glfx::ComputeCameraProjection(65.0, engine.GetWindow()->GetWidth(), engine.GetWindow()->GetHeight(), 0.01, 1000.0); 
-		const auto eye			= GLFXEngine::Get().GetMainCamera().GetWorldPosition();
+		const auto model			= m_mvp.m_matrix_translation * m_mvp.m_matrix_scale * m_mvp.m_matrix_rotation;
+		const auto view				= glfx::GetViewMatrix(engine.GetMainCamera().m_camera_props);
+		const auto projection		= glfx::ComputeCameraProjection(65.0, engine.GetWindow()->GetWidth(), engine.GetWindow()->GetHeight(), 0.01, 1000.0); 
+		const auto eye				= GLFXEngine::Get().GetMainCamera().GetWorldPosition();
 
 		m_shader.SetMatrix4x4("model", model);
 		m_shader.SetMatrix4x4("view", view);
@@ -37,39 +58,52 @@ namespace glfx
 		m_shader.SetVec3("eye", eye);
 	}
 
-	auto Mesh::GetPosition() const -> glm::vec3
+	auto Mesh::Draw() -> void
 	{
-		return m_position;
-	}
-
-	auto Mesh::GetScale() const -> glm::vec3
-	{
-		return m_scale;
-	}
-
-	auto Mesh::GetRotation() const -> glm::vec3
-	{
-		return m_rotation;
-	}
-
-	auto Mesh::SetPosition(const glm::vec3& v) -> void
-	{
-		m_position = v;
-	}
-
-	auto Mesh::SetScale(const glm::vec3& v) -> void
-	{
-		m_scale = v;
-	}
-
-	auto Mesh::SetRotation(const glm::vec3& v) -> void
-	{
-		m_rotation = v;
+		m_shader.Apply();
+		//glBindTexture(GL_TEXTURE_2D, texture.GetTexture()); // todo: add texture
+		glBindVertexArray(m_vao);
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
 	}
 
 	auto Mesh::SetShader(const Shader& shader) -> void
 	{
 		m_shader = shader;
+	}
+
+	auto Mesh::GetShader() const -> Shader
+	{
+		return m_shader;
+	}
+
+	auto Mesh::GetVertices() const -> std::vector<glm::vec3>
+	{
+		return m_vertices;
+	}
+
+	auto Mesh::GetVertexNormals() const -> std::vector<glm::vec3>
+	{
+		return m_normals;
+	}
+
+	auto Mesh::GetUvs() const -> std::vector<glm::vec2>
+	{
+		return m_uvs;
+	}
+
+	auto Mesh::SetVertices(const std::vector<glm::vec3>& v_list) -> void
+	{
+		m_vertices = v_list;
+	}
+
+	auto Mesh::SetNormals(const std::vector<glm::vec3>& vt_list) -> void
+	{
+		m_normals = vt_list;
+	}
+
+	auto Mesh::SetUvs(const std::vector<glm::vec2>& vn_list) -> void
+	{
+		m_uvs = vn_list;
 	}
 
 	auto Mesh::PushGPUData(const void* data, const size_t data_size, const size_t vbo_index, const unsigned slot, const int slot_size, const size_t stride, const unsigned attrib_array_index) -> void

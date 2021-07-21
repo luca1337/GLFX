@@ -2,6 +2,11 @@
 
 namespace glfx
 {
+	Component::Component(const std::string& name) :
+		m_name(name)
+	{
+	}
+
 	auto Component::BeginPlay() -> void
 	{
 	}
@@ -12,6 +17,6 @@ namespace glfx
 
 	auto Component::GetName() const -> std::string
 	{
-		return "";
+		return m_name;
 	}
 }

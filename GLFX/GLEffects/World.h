@@ -6,16 +6,17 @@
 
 namespace glfx
 {
-	class IRenderable;
+	class GameObject;
 
 	class World
 	{
 	public:
-		void Render();
 		void Update(const double delta_time);
-		void Add(std::shared_ptr<IRenderable> object);
+		void Spawn(std::shared_ptr<GameObject> object);
+		auto GetGameObjects() const->std::vector<std::shared_ptr<GameObject>>;
+		auto ClearWorld() -> void;
 	private:
-		std::vector<std::shared_ptr<IRenderable>> m_objects;
+		std::vector<std::shared_ptr<GameObject>> m_objects;
 	};
 }
 

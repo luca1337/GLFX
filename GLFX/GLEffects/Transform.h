@@ -9,12 +9,12 @@ namespace glfx
 	/// </summary>
 	struct Transform
 	{
-		glm::dvec3 m_translation	= {};
-		glm::dvec3 m_rotation		= {};
+		glm::vec3 m_translation	= {};
+		glm::vec3 m_rotation		= {};
 
 		// todo:
 		// note that scale can be replaced with a quaternion
 		// so that we ensure no gimbal lock behaviour
-		glm::dvec3 m_scale			= { 1, 1, 1 };
+		glm::vec3 m_scale			= { 1, 1, 1 };
 	};
 }

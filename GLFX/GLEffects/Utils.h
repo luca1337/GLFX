@@ -4,7 +4,7 @@
 
 namespace glfx
 {
-	auto SetDepthTesting(const bool enable)
+	/*auto SetDepthTesting(const bool enable)
 	{
 		if (enable) {
 			glEnable(GL_DEPTH_TEST);
@@ -29,5 +29,5 @@ namespace glfx
 		{
 			glDisable(GL_STENCIL_TEST);
 		}
-	}
+	}*/
 }

@@ -8,7 +8,6 @@
 #include <vector>
 #include <string_view>
 
-
 namespace glfx
 {
 	struct ISystem;

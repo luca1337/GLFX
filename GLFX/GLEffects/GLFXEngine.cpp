@@ -34,12 +34,12 @@ namespace glfx
         m_world = std::make_shared<World>();
         m_main_camera = {};
 
-        // Shaders
+        // Register Shaders
         auto& shader_resource_manager = ResourceManager<Shader>::GetInstance();
         shader_resource_manager.Add(ResourceType::SHADERS, "SolidShader", glfx::Shader("vertex.glsl", "fragment.glsl"));
         shader_resource_manager.Add(ResourceType::SHADERS, "OutlineShader", glfx::Shader("outline_vertex.glsl", "outline_fragment.glsl"));
 
-        // Textures
+        // Register Textures
         auto& textures_resource_manager = ResourceManager<Texture>::GetInstance();
         textures_resource_manager.Add(ResourceType::TEXTURES, "Wall", glfx::Texture("Assets/Textures/wall.jpg"));
 

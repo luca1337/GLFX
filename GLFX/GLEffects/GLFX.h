@@ -14,4 +14,10 @@ namespace glfx
 		UPDATE = 1,
 		PHYSICS = 2,
 	};
+
+	enum class MeshFilterType
+	{
+		CUBE = 0,
+		SPHERE = 1,
+	};
 }
